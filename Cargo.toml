@@ -1,0 +1,12 @@
+[package]
+name = "smore"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+qmetaobject = { version = "0.2" }
+cstr = "0.2"
+
+[build-dependencies]
