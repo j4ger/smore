@@ -31,6 +31,7 @@
             rustfmt
             rustPackages.clippy 
             qt6.full
+            bacon
           ];
           RUST_SRC_PATH = rustPlatform.rustLibSrc;
           LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:${ with pkgs; lib.makeLibraryPath [
