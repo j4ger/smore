@@ -1,48 +1,59 @@
 {
   inputs = {
-    naersk.url = "github:nix-community/naersk/master";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    naersk.url = "github:nmattia/naersk/master";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
+    flake-compat = {
+      url = github:edolstra/flake-compat;
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, utils, naersk }:
+  outputs = { self, nixpkgs, utils, naersk, ... }:
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
         naersk-lib = pkgs.callPackage naersk { };
-      in
+        libPath = with pkgs; lib.makeLibraryPath [
+          xorg.libxcb
+          libxkbcommon
+          wayland
+          vulkan-loader
+        ];
+     in
       {
-        # TODO: makewrapper that includes wayland etc.
-        smore =  naersk-lib.buildPackage {
+        defaultPackage = naersk-lib.buildPackage {
+          src = ./.;
+          doCheck = true;
           pname = "smore";
-          root = ./.;
-          nativeBuildInputs = with pkgs; [
-            mold
-            qt6.full
+          nativeBuildInputs = [ pkgs.makeWrapper ];
+          buildInputs = with pkgs; [
+            xorg.libxcb
           ];
-          NIX_CFLAGS_LINK = " -fuse-ld=mold";
+          postInstall = ''
+            wrapProgram "$out/bin/smore" --prefix LD_LIBRARY_PATH : "${libPath}"
+          '';
         };
-        devShell = with pkgs; mkShell.override {
-          stdenv = pkgs.stdenvAdapters.useMoldLinker pkgs.clangStdenv;
-        } {
+
+        defaultApp = utils.lib.mkApp {
+          drv = self.defaultPackage."${system}";
+        };
+
+        devShell = with pkgs; mkShell {
           buildInputs = [
             cargo
+            rust-analyzer
+            rustPackages.clippy
             rustc
             rustfmt
-            rustPackages.clippy 
-            qt6.full
-            bacon
+            tokei
+
+            xorg.libxcb
+            libxkbcommon
+            wayland
           ];
           RUST_SRC_PATH = rustPlatform.rustLibSrc;
-          LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:${ with pkgs; lib.makeLibraryPath [
-            wayland
-            libxkbcommon
-            fontconfig
-            libGL
-            xorg.libxcb 
-            xorg.libXfixes
-          ]}";
+          LD_LIBRARY_PATH = libPath;
         };
-      }
-    );
+      });
 }
