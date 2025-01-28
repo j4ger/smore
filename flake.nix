@@ -39,7 +39,9 @@
           drv = self.defaultPackage."${system}";
         };
 
-        devShell = with pkgs; mkShell {
+        devShell = with pkgs; mkShell.override {
+          stdenv = pkgs.stdenvAdapters.useMoldLinker pkgs.clangStdenv;
+        }{
           buildInputs = [
             cargo
             rust-analyzer
