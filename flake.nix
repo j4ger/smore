@@ -49,6 +49,7 @@
             rustc
             rustfmt
             tokei
+            bacon
 
             xorg.libxcb
             libxkbcommon

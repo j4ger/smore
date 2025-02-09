@@ -1,56 +1,47 @@
-use gpui::{
-    div, prelude::*, px, rgb, size, App, Application, Bounds, Context, SharedString, Window,
-    WindowBounds, WindowOptions,
-};
+mod views;
 
-struct HelloWorld {
-    text: SharedString,
+struct Smore {
+    screen: Screen,
 }
 
-impl Render for HelloWorld {
-    fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        div()
-            .flex()
-            .flex_col()
-            .gap_3()
-            .bg(rgb(0x505050))
-            .size(px(500.0))
-            .justify_center()
-            .items_center()
-            .shadow_lg()
-            .border_1()
-            .border_color(rgb(0x0000ff))
-            .text_xl()
-            .text_color(rgb(0xffffff))
-            .child(format!("Hello, {}!", &self.text))
-            .child(
-                div()
-                    .flex()
-                    .gap_2()
-                    .child(div().size_8().bg(gpui::red()))
-                    .child(div().size_8().bg(gpui::green()))
-                    .child(div().size_8().bg(gpui::blue()))
-                    .child(div().size_8().bg(gpui::yellow()))
-                    .child(div().size_8().bg(gpui::black()))
-                    .child(div().size_8().bg(gpui::white())),
-            )
+impl Default for Smore {
+    fn default() -> Self {
+        Smore {
+            screen: Screen::Login(Default::default()),
+        }
     }
 }
 
-fn main() {
-    Application::new().run(|cx: &mut App| {
-        let bounds = Bounds::centered(None, size(px(500.), px(500.0)), cx);
-        cx.open_window(
-            WindowOptions {
-                window_bounds: Some(WindowBounds::Windowed(bounds)),
-                ..Default::default()
-            },
-            |_, cx| {
-                cx.new(|_| HelloWorld {
-                    text: "World".into(),
-                })
-            },
-        )
-        .unwrap();
-    });
+#[derive(Debug, Clone)]
+enum Screen {
+    Login(views::Login),
+}
+
+#[derive(Debug, Clone)]
+enum Message {
+    Login(views::LoginMessage),
+}
+
+impl Smore {
+    fn title(&self) -> String {
+        match self.screen {
+            Screen::Login(_) => "Smore - Login".to_string(),
+        }
+    }
+
+    fn update(&mut self, event: Message) {
+        match &self.screen {
+            Screen::Login(inner) => {}
+        }
+    }
+
+    fn view(&self) -> iced::Element<Message> {
+        match &self.screen {
+            Screen::Login(inner) => inner.view().map(Message::Login),
+        }
+    }
+}
+
+fn main() -> iced::Result {
+    iced::application(Smore::title, Smore::update, Smore::view).run()
 }
