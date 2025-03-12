@@ -14,12 +14,20 @@
       let
         pkgs = import nixpkgs { inherit system; };
         naersk-lib = pkgs.callPackage naersk { };
-        libPath = with pkgs; lib.makeLibraryPath [
+        common-libs = with pkgs; [
           xorg.libxcb
           libxkbcommon
           wayland
           vulkan-loader
+          gdk-pixbuf
+
+          webkitgtk_4_1
+          gtk3
+          libsoup_3
+          glib
         ];
+        libPath = with pkgs; lib.makeLibraryPath ([
+       ] ++ common-libs);
      in
       {
         defaultPackage = naersk-lib.buildPackage {
@@ -43,17 +51,16 @@
           stdenv = pkgs.stdenvAdapters.useMoldLinker pkgs.clangStdenv;
         }{
           buildInputs = [
+          ] ++ common-libs;
+          nativeBuildInputs = [
             cargo
             rust-analyzer
             rustPackages.clippy
             rustc
             rustfmt
             tokei
-            bacon
-
-            xorg.libxcb
-            libxkbcommon
-            wayland
+            dioxus-cli
+            pkg-config
           ];
           RUST_SRC_PATH = rustPlatform.rustLibSrc;
           LD_LIBRARY_PATH = libPath;

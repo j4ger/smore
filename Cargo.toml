@@ -6,4 +6,19 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-iced = { git = "https://github.com/iced-rs/iced" }
+dioxus = { version = "0.6", features = ["router"] }
+
+[features]
+default = ["dioxus/desktop"]
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
