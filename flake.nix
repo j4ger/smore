@@ -25,6 +25,7 @@
           gtk3
           libsoup_3
           glib
+          xdotool
         ];
         libPath = with pkgs; lib.makeLibraryPath ([
        ] ++ common-libs);
