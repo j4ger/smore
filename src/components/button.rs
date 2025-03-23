@@ -137,8 +137,6 @@ pub fn Button(props: ButtonProps) -> Element {
     let palette = theme.palette;
     let scales = props.scale.unwrap_or(use_scale());
 
-    let mut button_ref: Signal<Option<Rc<MountedData>>> = use_signal(|| None);
-
     let line_height = scales.height(2.5);
     let border_radius = theme.layout.radius;
     let font_size = scales.font(0.875);
@@ -299,22 +297,23 @@ pub fn Button(props: ButtonProps) -> Element {
         _ => add_alpha_3(hover_bg, 0.65),
     };
 
+    let mut countdown: Option<Task> = None;
+
     let onclick = move |ev: Event<MouseData>| async move {
-        // this may not be needed
-        // test this out
-        let button_ref = button_ref();
-        let element = Rc::clone(button_ref.as_ref().unwrap());
-        let rect = element.get_client_rect().await.unwrap();
+        if let Some(countdown) = countdown.take() {
+            countdown.cancel();
+            drip_show.set(false);
+        }
         let coods = ev.element_coordinates();
         drip_x.set(coods.x as f32);
         drip_y.set(coods.y as f32);
         drip_show.set(true);
-        spawn(async move {
-            tokio::time::sleep(Duration::from_millis(350)).await;
+        countdown = Some(spawn(async move {
+            smol::Timer::after(Duration::from_millis(350)).await;
             drip_show.set(false);
             drip_x.set(0.);
             drip_y.set(0.);
-        });
+        }));
         props.onclick.call(ev);
     };
 
@@ -324,7 +323,6 @@ pub fn Button(props: ButtonProps) -> Element {
             style: style,
             disabled: props.disabled,
             onclick,
-            onmounted: move |ev| button_ref.set(Some(ev.data())),
             if drip_show() {
                 ButtonDrip {
                     x: drip_x,
