@@ -1,4 +1,4 @@
-use components::{init_ui_context, Button, ButtonTypes, GeistMeta};
+use components::{init_ui_context, Button, ButtonTypes, GeistMeta, Scale};
 use dioxus::prelude::*;
 
 mod api;
@@ -18,6 +18,7 @@ fn app() -> Element {
         }
         Button {
             type: ButtonTypes::Secondary,
+            scale: Scale::default().with_unit(24),
             "Secondary"
         }
         Button {
@@ -59,3 +60,4 @@ fn app() -> Element {
 // button ripple
 // theme switching (restart as no reactivity is added?)
 // geist meta tree shake
+// scale css variable inheritance (omit if not needed)

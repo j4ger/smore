@@ -1,62 +1,102 @@
+use std::{rc::Rc, time::Duration};
+
 use dioxus::prelude::*;
 
-use crate::components::{add_alpha_3, theme::Palette, use_scale, use_theme};
+use crate::components::{add_alpha_3, use_scale, use_theme};
 
-pub const BUTTON_STYLE_COMMON: &'static str =
-        ".btn {
-            box-sizing: border-box;
-            display: inline-block;
-            line-height: var(--g-line-height);
-            border-radius: var(--g-border-radius);
-            font-weight: 400;
-            font-size: var(--g-font-size);
-            user-select: none;
-            outline: none;
-            text-transform: capitalize;
-            justify-content: center;
-            text-align: center;
-            white-space: nowrap;
-            transition: background-color 200ms ease 0ms, box-shadow 200ms ease 0ms, border 200ms ease 0ms, color 200ms ease 0ms;
-            position: relative;
-            overflow: hidden;
-            color: var(--g-color);
-            background-color: var(--g-bg);
-            border: 1px solid var(--g-border);
-            cursor: var(--g-cursor);
-            pointer-events: var(--g-event);
-            box-shadow: var(--g-box-shadow);
-            min-width: var(--g-min-width);
-            width: var(--g-width);
-            height: var(--g-height);
-            padding: var(--g-pt) var(--g-pr) var(--g-pb) var(--g-pl);
-            margin: var(--g-mt) var(--g-mr) var(--g-mb) var(--g-ml);
+use super::Scale;
+
+pub const BUTTON_STYLE_COMMON: &'static str = "
+    .btn {
+        box-sizing: border-box;
+        display: inline-block;
+        line-height: var(--g-line-height);
+        border-radius: var(--g-border-radius);
+        font-weight: 400;
+        font-size: var(--g-font-size);
+        user-select: none;
+        outline: none;
+        text-transform: capitalize;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+        transition: background-color 200ms ease 0ms,
+                    box-shadow 200ms ease 0ms,
+                    border 200ms ease 0ms,
+                    color 200ms ease 0ms;
+        position: relative;
+        overflow: hidden;
+        color: var(--g-color);
+        background-color: var(--g-bg);
+        border: 1px solid var(--g-border);
+        cursor: var(--g-cursor);
+        pointer-events: var(--g-event);
+        box-shadow: var(--g-box-shadow);
+        min-width: var(--g-min-width);
+        width: var(--g-width);
+        height: var(--g-height);
+        padding: var(--g-pt) var(--g-pr) var(--g-pb) var(--g-pl);
+        margin: var(--g-mt) var(--g-mr) var(--g-mb) var(--g-ml);
+    }
+
+    .btn:hover,
+    .btn:focus {
+        color: var(--g-hover-color);
+        background-color: var(--g-hover-bg);
+        border-color: var(--g-hover-border);
+        box-shadow: var(--g-hover-box-shadow);
+        transform: translate3d(0px, var(--g-hover-transform), 0px);
+    }
+
+    .btn :global(.text) {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        line-height: inherit;
+        top: -1px;
+    }
+
+    .btn :global(.text p),
+    .btn :global(.text pre),
+    .btn :global(.text div) {
+        margin: 0;
+    }
+
+    .drip {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    .drip-svg {
+        position: absolute;
+        animation: 350ms ease-in expand;
+        animation-fill-mode: forwards;
+        width: 1rem;
+        height: 1rem;
+    }
+
+    @keyframes expand {
+        0% {
+            opacity: 0;
+            transform: scale(1);
         }
-
-        .btn:hover,
-        .btn:focus {
-            color: var(--g-hover-color);
-            background-color: var(--g-hover-bg);
-            border-color: var(--g-hover-border);
-            box-shadow: var(--g-hover-box-shadow);
-            transform: translate3d(0px, var(--g-hover-transform), 0px);
+        30% {
+            opacity: 1;
         }
-
-        .btn :global(.text) {
-            position: relative;
-            z-index: 1;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            line-height: inherit;
-            top: -1px;
+        80% {
+            opacity: 0.5;
         }
-
-        .btn :global(.text p),
-        .btn :global(.text pre),
-        .btn :global(.text div) {
-            margin: 0;
-        }";
+        100% {
+            transform: scale(28);
+            opacity: 0;
+        }
+    }";
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ButtonTypes {
@@ -88,17 +128,20 @@ pub struct ButtonProps {
     disabled: bool,
     #[props(default = EventHandler::default())]
     onclick: EventHandler<MouseEvent>,
+    scale: Option<Scale>,
     children: Element,
 }
 
 pub fn Button(props: ButtonProps) -> Element {
     let theme = use_theme();
     let palette = theme.palette;
-    let SCALES = use_scale();
+    let scales = props.scale.unwrap_or(use_scale());
 
-    let line_height = SCALES.height(2.5);
+    let mut button_ref: Signal<Option<Rc<MountedData>>> = use_signal(|| None);
+
+    let line_height = scales.height(2.5);
     let border_radius = theme.layout.radius;
-    let font_size = SCALES.font(0.875);
+    let font_size = scales.font(0.875);
 
     // -light types share the same background color as their dark counterparts
     // they only have different hover colors
@@ -133,32 +176,32 @@ pub fn Button(props: ButtonProps) -> Element {
         "none"
     };
 
-    let button_icon_padding = SCALES.pl(0.727);
-    let button_height = SCALES.height(2.5);
+    let button_icon_padding = scales.pl(0.727);
+    let button_height = scales.height(2.5);
 
     let min_width = if props.auto {
         "min-content".to_string()
     } else {
-        SCALES.width(10.5)
+        scales.width(10.5)
     };
     let width = if props.auto { "auto" } else { "initial" };
-    let height = SCALES.height(2.5);
+    let height = scales.height(2.5);
     let pl = if props.auto {
-        SCALES.pl(1.15)
+        scales.pl(1.15)
     } else {
-        SCALES.pl(1.375)
+        scales.pl(1.375)
     };
     let pr = if props.auto {
-        SCALES.pr(1.15)
+        scales.pr(1.15)
     } else {
-        SCALES.pr(1.375)
+        scales.pr(1.375)
     };
-    let pt = SCALES.pt(0.);
-    let pb = SCALES.pb(0.);
-    let mt = SCALES.mt(0.);
-    let mr = SCALES.mr(0.);
-    let mb = SCALES.mb(0.);
-    let ml = SCALES.ml(0.);
+    let pt = scales.pt(0.);
+    let pb = scales.pb(0.);
+    let mt = scales.mt(0.);
+    let mr = scales.mr(0.);
+    let mb = scales.mb(0.);
+    let ml = scales.ml(0.);
 
     let (cursor, event) = match (props.disabled, props.loading) {
         (true, _) => ("not-allowed", "auto"),
@@ -245,13 +288,86 @@ pub fn Button(props: ButtonProps) -> Element {
         --g-hover-transform: {hover_transform};"
     );
 
+    let mut drip_x = use_signal(|| 0f32);
+    let mut drip_y = use_signal(|| 0f32);
+    let mut drip_show = use_signal(|| false);
+    let drip_color = match props.r#type {
+        ButtonTypes::ErrorLight
+        | ButtonTypes::SuccessLight
+        | ButtonTypes::WarningLight
+        | ButtonTypes::SecondaryLight => add_alpha_3(palette.accents_2, 0.65),
+        _ => add_alpha_3(hover_bg, 0.65),
+    };
+
+    let onclick = move |ev: Event<MouseData>| async move {
+        // this may not be needed
+        // test this out
+        let button_ref = button_ref();
+        let element = Rc::clone(button_ref.as_ref().unwrap());
+        let rect = element.get_client_rect().await.unwrap();
+        let coods = ev.element_coordinates();
+        drip_x.set(coods.x as f32);
+        drip_y.set(coods.y as f32);
+        drip_show.set(true);
+        spawn(async move {
+            tokio::time::sleep(Duration::from_millis(350)).await;
+            drip_show.set(false);
+            drip_x.set(0.);
+            drip_y.set(0.);
+        });
+        props.onclick.call(ev);
+    };
+
     rsx! {
         button {
             class: "btn",
             style: style,
             disabled: props.disabled,
-            onclick: props.onclick,
+            onclick,
+            onmounted: move |ev| button_ref.set(Some(ev.data())),
+            if drip_show() {
+                ButtonDrip {
+                    x: drip_x,
+                    y: drip_y,
+                    color: drip_color,
+                }
+            }
             {props.children}
+        }
+    }
+}
+
+#[component]
+fn ButtonDrip(x: Signal<f32>, y: Signal<f32>, color: String) -> Element {
+    let style = use_memo(move || {
+        let x = x() - 10.;
+        let y = y() - 10.;
+        format!("top: {y}; left: {x};")
+    });
+    rsx! {
+        div {
+            class: "drip",
+            svg {
+                class: "drip-svg",
+                view_box: "0 0 20 20",
+                width: "20",
+                height: "20",
+                style,
+                g {
+                    stroke : "none",
+                    stroke_width: "1",
+                    fill: "none",
+                    fill_rule: "evenodd",
+                    g {
+                        fill: color,
+                        rect {
+                            width: "100%",
+                            height: "100%",
+                            rx: "10"
+                        }
+                    }
+                }
+            }
         }
     }
 }
