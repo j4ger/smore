@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::components::{add_alpha_3, use_scale, use_theme};
+use crate::components::{add_alpha_3, theme::Palette, use_scale, use_theme};
 
 pub const BUTTON_STYLE_COMMON: &'static str =
         ".btn {
@@ -93,6 +93,7 @@ pub struct ButtonProps {
 
 pub fn Button(props: ButtonProps) -> Element {
     let theme = use_theme();
+    let palette = theme.palette;
     let SCALES = use_scale();
 
     let line_height = SCALES.height(2.5);
@@ -101,27 +102,23 @@ pub fn Button(props: ButtonProps) -> Element {
 
     // -light types share the same background color as their dark counterparts
     // they only have different hover colors
-    let (bg, border, color) = match props.r#type {
-        ButtonTypes::Default => (
-            theme.palette.background,
-            theme.palette.border,
-            theme.palette.accents_5,
-        ),
-        ButtonTypes::Secondary | ButtonTypes::SecondaryLight => (
-            theme.palette.foreground,
-            theme.palette.foreground,
-            theme.palette.background,
-        ),
-        ButtonTypes::Success | ButtonTypes::SuccessLight => {
-            (theme.palette.success, theme.palette.success, "#fff")
+    let (bg, border, color) = if props.disabled {
+        (palette.accents_1, palette.accents_2, "#ccc")
+    } else {
+        match props.r#type {
+            ButtonTypes::Default => (palette.background, palette.border, palette.accents_5),
+            ButtonTypes::Secondary | ButtonTypes::SecondaryLight => {
+                (palette.foreground, palette.foreground, palette.background)
+            }
+            ButtonTypes::Success | ButtonTypes::SuccessLight => {
+                (palette.success, palette.success, "#fff")
+            }
+            ButtonTypes::Warning | ButtonTypes::WarningLight => {
+                (palette.warning, palette.warning, "#fff")
+            }
+            ButtonTypes::Error | ButtonTypes::ErrorLight => (palette.error, palette.error, "#fff"),
+            ButtonTypes::Abort => ("transparent", "transparent", palette.accents_5),
         }
-        ButtonTypes::Warning | ButtonTypes::WarningLight => {
-            (theme.palette.warning, theme.palette.warning, "#fff")
-        }
-        ButtonTypes::Error | ButtonTypes::ErrorLight => {
-            (theme.palette.error, theme.palette.error, "#fff")
-        }
-        ButtonTypes::Abort => ("transparent", "transparent", theme.palette.accents_5),
     };
 
     let box_shadow = if props.shadow {
@@ -173,37 +170,17 @@ pub fn Button(props: ButtonProps) -> Element {
 
     let (hover_bg, hover_border, hover_color) = {
         let colors = match props.r#type {
-            ButtonTypes::Default => (
-                theme.palette.background,
-                theme.palette.foreground,
-                theme.palette.foreground,
-            ),
-            ButtonTypes::Secondary => (
-                theme.palette.background,
-                theme.palette.foreground,
-                theme.palette.foreground,
-            ),
-            ButtonTypes::Success => (
-                theme.palette.background,
-                theme.palette.success,
-                theme.palette.success,
-            ),
-            ButtonTypes::Warning => (
-                theme.palette.background,
-                theme.palette.warning,
-                theme.palette.warning,
-            ),
-            ButtonTypes::Error => (
-                theme.palette.background,
-                theme.palette.error,
-                theme.palette.error,
-            ),
-            ButtonTypes::Abort => ("transparent", "transparent", theme.palette.accents_5),
+            ButtonTypes::Default => (palette.background, palette.foreground, palette.foreground),
+            ButtonTypes::Secondary => (palette.background, palette.foreground, palette.foreground),
+            ButtonTypes::Success => (palette.background, palette.success, palette.success),
+            ButtonTypes::Warning => (palette.background, palette.warning, palette.warning),
+            ButtonTypes::Error => (palette.background, palette.error, palette.error),
+            ButtonTypes::Abort => ("transparent", "transparent", palette.accents_5),
             _ => (alpha_bg.as_str(), border, color),
         };
 
         if props.disabled {
-            (theme.palette.accents_1, theme.palette.accents_2, "#ccc")
+            (palette.accents_1, palette.accents_2, "#ccc")
         } else if props.loading {
             (colors.0, colors.1, "transparent")
         } else if props.shadow {
@@ -211,19 +188,17 @@ pub fn Button(props: ButtonProps) -> Element {
         } else {
             if props.ghost {
                 match props.r#type {
-                    ButtonTypes::Secondary | ButtonTypes::SecondaryLight => (
-                        theme.palette.foreground,
-                        theme.palette.background,
-                        theme.palette.background,
-                    ),
+                    ButtonTypes::Secondary | ButtonTypes::SecondaryLight => {
+                        (palette.foreground, palette.background, palette.background)
+                    }
                     ButtonTypes::Success | ButtonTypes::SuccessLight => {
-                        (theme.palette.success, theme.palette.background, "white")
+                        (palette.success, palette.background, "white")
                     }
                     ButtonTypes::Warning | ButtonTypes::WarningLight => {
-                        (theme.palette.warning, theme.palette.background, "white")
+                        (palette.warning, palette.background, "white")
                     }
                     ButtonTypes::Error | ButtonTypes::ErrorLight => {
-                        (theme.palette.error, theme.palette.background, "white")
+                        (palette.error, palette.background, "white")
                     }
                     _ => colors,
                 }
@@ -240,7 +215,7 @@ pub fn Button(props: ButtonProps) -> Element {
         --g-line-height: {line_height};
         --g-border-radius: {border_radius};
         --g-font-size: {font_size};
-        --color: {color};
+        --g-color: {color};
         --g-bg: {bg};
         --g-border: {border};
         --g-cursor: {cursor};
@@ -264,7 +239,7 @@ pub fn Button(props: ButtonProps) -> Element {
         --g-hover-color: {hover_color};
         --geist-ui-button-color: {hover_color};
         --g-hover-bg: {hover_bg};
-        --g-border-color: {hover_border};
+        --g-hover-border: {hover_border};
         box-shadow: var(--g-hover-box-shadow);
         --g-hover-box-shadow: {hover_box_shadow};
         --g-hover-transform: {hover_transform};"

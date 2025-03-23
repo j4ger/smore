@@ -1,4 +1,4 @@
-use components::{init_ui_context, Button, GeistMeta};
+use components::{init_ui_context, Button, ButtonTypes, GeistMeta};
 use dioxus::prelude::*;
 
 mod api;
@@ -14,8 +14,43 @@ fn app() -> Element {
     rsx! {
         GeistMeta {}
         Button {
-            onclick: |_| println!("1"),
-            "hi"
+            "Default"
+        }
+        Button {
+            type: ButtonTypes::Secondary,
+            "Secondary"
+        }
+        Button {
+            type: ButtonTypes::Success,
+            "Success"
+        }
+        Button {
+            type: ButtonTypes::Warning,
+            "Warning"
+        }
+        Button {
+            type: ButtonTypes::Error,
+            "Error"
+        }
+        Button {
+            type: ButtonTypes::Abort,
+            "Abort"
+        }
+        Button {
+            type: ButtonTypes::SecondaryLight,
+            "SecondaryLight"
+        }
+        Button {
+            type: ButtonTypes::SuccessLight,
+            "SuccessLight"
+        }
+        Button {
+            type: ButtonTypes::WarningLight,
+            "WarningLight"
+        }
+        Button {
+            type: ButtonTypes::ErrorLight,
+            "ErrorLight"
         }
     }
 }

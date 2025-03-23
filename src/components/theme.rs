@@ -1,61 +1,5 @@
 use dioxus::prelude::*;
 
-// extracted from geist-ui
-/*
-export const palette: GeistUIThemesPalette = {
-  accents_1: '#fafafa',
-  accents_2: '#eaeaea',
-  accents_3: '#999',
-  accents_4: '#888',
-  accents_5: '#666',
-  accents_6: '#444',
-  accents_7: '#333',
-  accents_8: '#111',
-  background: '#fff',
-  foreground: '#000',
-  selection: '#79ffe1',
-  secondary: '#666',
-  code: '#f81ce5',
-  border: '#eaeaea',
-  error: '#e00',
-  errorLight: '#ff1a1a',
-  errorLighter: '#f7d4d6',
-  errorDark: '#c50000',
-  success: '#0070f3',
-  successLight: '#3291ff',
-  successLighter: '#d3e5ff',
-  successDark: '#0761d1',
-  warning: '#f5a623',
-  warningLight: '#f7b955',
-  warningLighter: '#ffefcf',
-  warningDark: '#ab570a',
-  cyan: '#50e3c2',
-  cyanLighter: '#aaffec',
-  cyanLight: '#79ffe1',
-  cyanDark: '#29bc9b',
-  violet: '#7928ca',
-  violetLighter: '#e3d7fc',
-  violetLight: '#8a63d2',
-  violetDark: '#4c2889',
-  purple: '#f81ce5',
-  alert: '#ff0080',
-  magenta: '#eb367f',
-  link: '#0070f3',
-}
-
-export const expressiveness: GeistUIThemesExpressiveness = {
-  linkStyle: 'none',
-  linkHoverStyle: 'none',
-  dropdownBoxShadow: '0 4px 4px 0 rgba(0, 0, 0, 0.02)',
-  scrollerStart: 'rgba(255, 255, 255, 1)',
-  scrollerEnd: 'rgba(255, 255, 255, 0)',
-  shadowSmall: '0 5px 10px rgba(0, 0, 0, 0.12)',
-  shadowMedium: '0 8px 30px rgba(0, 0, 0, 0.12)',
-  shadowLarge: '0 30px 60px rgba(0, 0, 0, 0.12)',
-  portalOpacity: 0.25,
-}
-*/
-
 #[derive(Clone, Copy, Debug)]
 pub struct Theme {
     pub name: &'static str,
@@ -178,55 +122,6 @@ pub const LIGHT_THEME: Theme = Theme {
     font: DEFAULT_FONT,
     layout: DEFAULT_LAYOUT,
 };
-
-// extracted from geist-ui
-/*
-export const defaultFont: GeistUIThemesFont = {
-  sans: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
-  mono: 'Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace',
-  prism:
-    'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,"Liberation Mono", "Courier New", monospace',
-}
-
-export const defaultBreakpoints: GeistUIThemesBreakpoints = {
-  xs: {
-    min: '0',
-    max: '650px',
-  },
-  sm: {
-    min: '650px',
-    max: '900px',
-  },
-  md: {
-    min: '900px',
-    max: '1280px',
-  },
-  lg: {
-    min: '1280px',
-    max: '1920px',
-  },
-  xl: {
-    min: '1920px',
-    max: '10000px',
-  },
-}
-
-export const defaultLayout: GeistUIThemesLayout = {
-  gap: '16pt',
-  gapNegative: '-16pt',
-  gapHalf: '8pt',
-  gapHalfNegative: '-8pt',
-  gapQuarter: '4pt',
-  gapQuarterNegative: '-4pt',
-  pageMargin: '16pt',
-  pageWidth: '750pt',
-  pageWidthWithMargin: '782pt',
-  breakpointMobile: defaultBreakpoints.xs.max,
-  breakpointTablet: defaultBreakpoints.sm.max,
-  radius: '6px',
-  unit: '16px',
-}
-*/
 
 #[derive(Clone, Copy, Debug)]
 pub struct Layout {

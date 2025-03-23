@@ -1,5 +1,5 @@
 mod button;
-pub use button::Button;
+pub use button::{Button, ButtonTypes};
 
 mod scale;
 pub use scale::{use_scale, Scale};
