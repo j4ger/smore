@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 
 use crate::components::button::BUTTON_STYLE_COMMON;
 use crate::components::loading::LOADING_STYLE_COMMON;
+use crate::components::page::PAGE_STYLE_COMMON;
 
 pub fn GeistMeta() -> Element {
     rsx! {
@@ -9,6 +10,7 @@ pub fn GeistMeta() -> Element {
             "
             {BUTTON_STYLE_COMMON}
             {LOADING_STYLE_COMMON}
+            {PAGE_STYLE_COMMON}
             "
         }
     }

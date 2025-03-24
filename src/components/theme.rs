@@ -2,7 +2,7 @@ use dioxus::prelude::*;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Theme {
-    pub name: &'static str,
+    pub r#type: &'static str,
     pub palette: Palette,
     pub expressiveness: Expressiveness,
     pub layout: Layout,
@@ -66,7 +66,7 @@ pub struct Expressiveness {
 }
 
 pub const LIGHT_THEME: Theme = Theme {
-    name: "Light",
+    r#type: "light",
     palette: Palette {
         accents_1: "#fafafa",
         accents_2: "#eaeaea",

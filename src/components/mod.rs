@@ -16,6 +16,9 @@ pub use meta::GeistMeta;
 mod loading;
 pub use loading::{Loading, LoadingTypes};
 
+mod page;
+pub use page::Page;
+
 pub fn init_ui_context() {
     theme::provide_theme();
     scale::provide_scale(Scale::default());
