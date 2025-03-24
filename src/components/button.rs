@@ -31,8 +31,8 @@ pub const BUTTON_STYLE_COMMON: &'static str = "
         min-width: var(--g-min-width);
         width: var(--g-width);
         height: var(--g-height);
-        padding: var(--g-pt) var(--g-pr) var(--g-pb) var(--g-pl);
-        margin: var(--g-mt) var(--g-mr) var(--g-mb) var(--g-ml);
+        padding: var(--g-padding);
+        margin: var(--g-margin);
     }
 
     .btn:hover,
@@ -265,14 +265,8 @@ pub fn Button(props: ButtonProps) -> Element {
         --g-min-width: {min_width};
         --g-width: {width};
         --g-height: {height};
-        --g-pt: {pt};
-        --g-pb: {pb};
-        --g-pr: {pr};
-        --g-pl: {pl};
-        --g-mt: {mt};
-        --g-mr: {mr};
-        --g-mb: {mb};
-        --g-ml: {ml};
+        --g-padding: {pt} {pb} {pl} {pr};
+        --g-margin: {mt} {mr} {mb} {ml};
         --g-hover-color: {hover_color};
         --geist-ui-button-color: {hover_color};
         --g-hover-bg: {hover_bg};
