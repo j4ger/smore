@@ -1,10 +1,6 @@
-use std::{rc::Rc, time::Duration};
-
+use crate::components::{add_alpha_3, use_scale, use_theme, Scale};
 use dioxus::prelude::*;
-
-use crate::components::{add_alpha_3, use_scale, use_theme};
-
-use super::Scale;
+use std::time::Duration;
 
 pub const BUTTON_STYLE_COMMON: &'static str = "
     .btn {
@@ -297,10 +293,10 @@ pub fn Button(props: ButtonProps) -> Element {
         _ => add_alpha_3(hover_bg, 0.65),
     };
 
-    let mut countdown: Option<Task> = None;
+    let mut countdown: Signal<Option<Task>> = use_signal(|| None);
 
     let onclick = move |ev: Event<MouseData>| async move {
-        if let Some(countdown) = countdown.take() {
+        if let Some(countdown) = countdown().take() {
             countdown.cancel();
             drip_show.set(false);
         }
@@ -308,12 +304,12 @@ pub fn Button(props: ButtonProps) -> Element {
         drip_x.set(coods.x as f32);
         drip_y.set(coods.y as f32);
         drip_show.set(true);
-        countdown = Some(spawn(async move {
+        countdown.set(Some(spawn(async move {
             smol::Timer::after(Duration::from_millis(350)).await;
             drip_show.set(false);
             drip_x.set(0.);
             drip_y.set(0.);
-        }));
+        })));
         props.onclick.call(ev);
     };
 
