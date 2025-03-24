@@ -13,6 +13,9 @@ pub use utils::*;
 mod meta;
 pub use meta::GeistMeta;
 
+mod loading;
+pub use loading::{Loading, LoadingTypes};
+
 pub fn init_ui_context() {
     theme::provide_theme();
     scale::provide_scale(Scale::default());

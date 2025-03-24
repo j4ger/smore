@@ -1,4 +1,4 @@
-use components::{init_ui_context, Button, ButtonTypes, GeistMeta, Scale};
+use components::{init_ui_context, Button, ButtonTypes, GeistMeta, Loading, Scale};
 use dioxus::prelude::*;
 
 mod api;
@@ -17,8 +17,19 @@ fn app() -> Element {
             "Default"
         }
         Button {
+            loading: true,
+            "Loading"
+        }
+        Button {
+            disabled: true,
+            "Disabled"
+        }
+        Button {
+            ghost: true,
+            "Ghost"
+        }
+        Button {
             type: ButtonTypes::Secondary,
-            scale: Scale::default().with_unit(24),
             "Secondary"
         }
         Button {
@@ -52,6 +63,9 @@ fn app() -> Element {
         Button {
             type: ButtonTypes::ErrorLight,
             "ErrorLight"
+        }
+        Loading {
+
         }
     }
 }

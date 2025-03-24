@@ -1,4 +1,4 @@
-use crate::components::{add_alpha_3, use_scale, use_theme, Scale};
+use crate::components::{add_alpha_3, use_scale, use_theme, Loading, Scale};
 use dioxus::prelude::*;
 use std::time::Duration;
 
@@ -92,6 +92,16 @@ pub const BUTTON_STYLE_COMMON: &'static str = "
             transform: scale(28);
             opacity: 0;
         }
+    }
+
+    .btn-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 2;
+        background-color: var(--g-bg);
     }";
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -265,7 +275,7 @@ pub fn Button(props: ButtonProps) -> Element {
         --g-min-width: {min_width};
         --g-width: {width};
         --g-height: {height};
-        --g-padding: {pt} {pb} {pl} {pr};
+        --g-padding: {pt} {pr} {pb} {pl};
         --g-margin: {mt} {mr} {mb} {ml};
         --g-hover-color: {hover_color};
         --geist-ui-button-color: {hover_color};
@@ -290,6 +300,9 @@ pub fn Button(props: ButtonProps) -> Element {
     let mut countdown: Signal<Option<Task>> = use_signal(|| None);
 
     let onclick = move |ev: Event<MouseData>| async move {
+        if props.disabled || props.loading {
+            return;
+        }
         if let Some(countdown) = countdown().take() {
             countdown.cancel();
             drip_show.set(false);
@@ -313,6 +326,12 @@ pub fn Button(props: ButtonProps) -> Element {
             style: style,
             disabled: props.disabled,
             onclick,
+            if props.loading {
+                ButtonLoading {
+                    color
+                }
+            }
+            {props.children}
             if drip_show() {
                 ButtonDrip {
                     x: drip_x,
@@ -320,7 +339,6 @@ pub fn Button(props: ButtonProps) -> Element {
                     color: drip_color,
                 }
             }
-            {props.children}
         }
     }
 }
@@ -355,6 +373,18 @@ fn ButtonDrip(x: Signal<f32>, y: Signal<f32>, color: String) -> Element {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+#[component]
+fn ButtonLoading(color: String) -> Element {
+    rsx! {
+        div {
+            class: "btn-loading",
+            Loading {
+                color
             }
         }
     }

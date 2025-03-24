@@ -15,8 +15,8 @@ pub struct Scale {
     mr: Option<u32>,
     mx: Option<u32>,
     my: Option<u32>,
-    width: Option<u32>,
-    height: Option<u32>,
+    pub width: Option<u32>,
+    pub height: Option<u32>,
     font: Option<u32>,
 }
 
