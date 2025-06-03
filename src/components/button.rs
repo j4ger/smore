@@ -33,7 +33,6 @@ pub const BUTTON_STYLE_COMMON: &'static str = "
         height: var(--g-height);
         padding: var(--g-padding);
         margin: var(--g-margin);
-        border-radius: var(--g-border-radius);
     }
 
     .btn:hover,
