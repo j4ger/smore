@@ -312,7 +312,7 @@ pub fn Button(props: ButtonProps) -> Element {
         drip_y.set(coods.y as f32);
         drip_show.set(true);
         countdown.set(Some(spawn(async move {
-            smol::Timer::after(Duration::from_millis(350)).await;
+            tokio::time::sleep(Duration::from_millis(350)).await;
             drip_show.set(false);
             drip_x.set(0.);
             drip_y.set(0.);

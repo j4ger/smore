@@ -61,7 +61,9 @@
             rustfmt
             tokei
             dioxus-cli
+            wasm-bindgen-cli
             pkg-config
+            lld
           ];
           RUST_SRC_PATH = rustPlatform.rustLibSrc;
           LD_LIBRARY_PATH = libPath;
