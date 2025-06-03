@@ -33,6 +33,7 @@ pub const BUTTON_STYLE_COMMON: &'static str = "
         height: var(--g-height);
         padding: var(--g-padding);
         margin: var(--g-margin);
+        border-radius: var(--g-border-radius);
     }
 
     .btn:hover,
@@ -278,7 +279,6 @@ pub fn Button(props: ButtonProps) -> Element {
         --g-padding: {pt} {pr} {pb} {pl};
         --g-margin: {mt} {mr} {mb} {ml};
         --g-hover-color: {hover_color};
-        --geist-ui-button-color: {hover_color};
         --g-hover-bg: {hover_bg};
         --g-hover-border: {hover_border};
         box-shadow: var(--g-hover-box-shadow);
