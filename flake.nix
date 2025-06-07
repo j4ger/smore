@@ -15,17 +15,20 @@
         pkgs = import nixpkgs { inherit system; };
         naersk-lib = pkgs.callPackage naersk { };
         common-libs = with pkgs; [
-          xorg.libxcb
+          curl
+          fontconfig
+          freetype
+          libgit2
+          openssl
+          sqlite
+          zlib
+          zstd
+          alsa-lib
           libxkbcommon
           wayland
           vulkan-loader
-          gdk-pixbuf
-
-          webkitgtk_4_1
-          gtk3
-          libsoup_3
-          glib
-          xdotool
+          xorg.libX11
+          xorg.libxcb
         ];
         libPath = with pkgs; lib.makeLibraryPath ([
        ] ++ common-libs);
@@ -60,10 +63,8 @@
             rustc
             rustfmt
             tokei
-            dioxus-cli
-            wasm-bindgen-cli
             pkg-config
-            lld
+            cmake
           ];
           RUST_SRC_PATH = rustPlatform.rustLibSrc;
           LD_LIBRARY_PATH = libPath;

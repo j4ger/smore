@@ -1,81 +1,109 @@
-use components::{init_ui_context, Button, ButtonTypes, GeistMeta, Loading, Page, Scale};
-use dioxus::prelude::*;
-
 mod api;
-mod components;
 mod views;
 
-fn main() {
-    launch(app);
+use gpui::{
+    div, prelude::*, px, rgb, size, App, Application, Bounds, Context, SharedString, Window,
+    WindowBounds, WindowOptions,
+};
+
+struct HelloWorld {
+    text: SharedString,
 }
 
-fn app() -> Element {
-    init_ui_context();
-    rsx! {
-        GeistMeta {}
-            //Page {
-            //dot_backdrop: true,
-            Button {
-                "Default"
-            }
-            Button {
-                loading: true,
-                "Loading"
-            }
-            Button {
-                disabled: true,
-                "Disabled"
-            }
-            Button {
-                ghost: true,
-                "Ghost"
-            }
-            Button {
-                type: ButtonTypes::Secondary,
-                "Secondary"
-            }
-            Button {
-                type: ButtonTypes::Success,
-                "Success"
-            }
-            Button {
-                type: ButtonTypes::Warning,
-                "Warning"
-            }
-            Button {
-                type: ButtonTypes::Error,
-                "Error"
-            }
-            Button {
-                type: ButtonTypes::Abort,
-                "Abort"
-            }
-            Button {
-                type: ButtonTypes::SecondaryLight,
-                "SecondaryLight"
-            }
-            Button {
-                type: ButtonTypes::SuccessLight,
-                "SuccessLight"
-            }
-            Button {
-                type: ButtonTypes::WarningLight,
-                "WarningLight"
-            }
-            Button {
-                type: ButtonTypes::ErrorLight,
-                "ErrorLight"
-            }
-            Loading {
-
-            }
-            //}
+impl Render for HelloWorld {
+    fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
+        div()
+            .flex()
+            .flex_col()
+            .gap_3()
+            .bg(rgb(0x505050))
+            .size(px(500.0))
+            .justify_center()
+            .items_center()
+            .shadow_lg()
+            .border_1()
+            .border_color(rgb(0x0000ff))
+            .text_xl()
+            .text_color(rgb(0xffffff))
+            .child(format!("Hello, {}!", &self.text))
+            .child(
+                div()
+                    .flex()
+                    .gap_2()
+                    .child(
+                        div()
+                            .size_8()
+                            .bg(gpui::red())
+                            .border_1()
+                            .border_dashed()
+                            .rounded_md()
+                            .border_color(gpui::white()),
+                    )
+                    .child(
+                        div()
+                            .size_8()
+                            .bg(gpui::green())
+                            .border_1()
+                            .border_dashed()
+                            .rounded_md()
+                            .border_color(gpui::white()),
+                    )
+                    .child(
+                        div()
+                            .size_8()
+                            .bg(gpui::blue())
+                            .border_1()
+                            .border_dashed()
+                            .rounded_md()
+                            .border_color(gpui::white()),
+                    )
+                    .child(
+                        div()
+                            .size_8()
+                            .bg(gpui::yellow())
+                            .border_1()
+                            .border_dashed()
+                            .rounded_md()
+                            .border_color(gpui::white()),
+                    )
+                    .child(
+                        div()
+                            .size_8()
+                            .bg(gpui::black())
+                            .border_1()
+                            .border_dashed()
+                            .rounded_md()
+                            .rounded_md()
+                            .border_color(gpui::white()),
+                    )
+                    .child(
+                        div()
+                            .size_8()
+                            .bg(gpui::white())
+                            .border_1()
+                            .border_dashed()
+                            .rounded_md()
+                            .border_color(gpui::black()),
+                    ),
+            )
     }
 }
 
-// TODOs:
-// button ripple
-// theme switching (restart as no reactivity is added?)
-// geist meta tree shake
-// scale css variable inheritance (omit if not needed)
-// this can be done by assigning a default value for the variable in the COMMON_STYLE part and overwrite if needed
+fn main() {
+    Application::new().run(|cx: &mut App| {
+        let bounds = Bounds::centered(None, size(px(500.), px(500.0)), cx);
+        cx.open_window(
+            WindowOptions {
+                window_bounds: Some(WindowBounds::Windowed(bounds)),
+                ..Default::default()
+            },
+            |_, cx| {
+                cx.new(|_| HelloWorld {
+                    text: "World".into(),
+                })
+            },
+        )
+        .unwrap();
+        cx.activate(true);
+    });
+}
