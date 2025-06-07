@@ -188,7 +188,7 @@ pub fn Button(props: ButtonProps) -> Element {
     } else {
         scales.width(10.5)
     };
-    let width = if props.auto { "auto" } else { "initial" };
+    let width = if props.auto { "auto" } else { "auto" };
     let height = scales.height(2.5);
     let pl = if props.auto {
         scales.pl(1.15)

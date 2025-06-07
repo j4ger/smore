@@ -13,8 +13,8 @@ fn app() -> Element {
     init_ui_context();
     rsx! {
         GeistMeta {}
-        Page {
-            dot_backdrop: true,
+            //Page {
+            //dot_backdrop: true,
             Button {
                 "Default"
             }
@@ -69,7 +69,7 @@ fn app() -> Element {
             Loading {
 
             }
-        }
+            //}
     }
 }
 
